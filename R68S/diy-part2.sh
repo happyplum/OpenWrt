@@ -57,19 +57,22 @@ sed -i "s|ARMv8|ARMv8_MINI|g" package/luci-app-amlogic/root/etc/config/amlogic
 # autocore
 sed -i 's/DEPENDS:=@(.*/DEPENDS:=@(TARGET_bcm27xx||TARGET_bcm53xx||TARGET_ipq40xx||TARGET_ipq806x||TARGET_ipq807x||TARGET_mvebu||TARGET_rockchip||TARGET_armvirt) \\/g' package/lean/autocore/Makefile
 
+# openClash
+svn co https://github.com/vernesong/OpenClash/trunk/luci-app-openclash package/luci-app-openclash
 # 编译 po2lmo (如果有po2lmo可跳过,其实我不知道啥用)
 pushd package/luci-app-openclash/tools/po2lmo
 make && sudo make install
 popd
+
+# passwall线管
 svn co https://github.com/kenzok8/openwrt-packages/trunk/tcping package/tcping
 svn co https://github.com/kenzok8/openwrt-packages/trunk/naiveproxy package/naiveproxy
 svn co https://github.com/kenzok8/openwrt-packages/trunk/lua-maxminddb package/lua-maxminddb
 svn co https://github.com/kenzok8/openwrt-packages/trunk/luci-app-passwall2 package/luci-app-passwall2
 
+# smartDNS
 svn co https://github.com/kenzok8/openwrt-packages/trunk/smartdns package/smartdns
 svn co https://github.com/kenzok8/openwrt-packages/trunk/luci-app-smartdns package/luci-app-smartdns
-
-svn co https://github.com/kenzok8/openwrt-packages/trunk/luci-app-vssr package/luci-app-vssr
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
