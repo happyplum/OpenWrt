@@ -64,11 +64,28 @@ pushd package/luci-app-openclash/tools/po2lmo
 make && sudo make install
 popd
 
-# passwall线管
-svn co https://github.com/kenzok8/openwrt-packages/trunk/tcping package/tcping
-svn co https://github.com/kenzok8/openwrt-packages/trunk/naiveproxy package/naiveproxy
-svn co https://github.com/kenzok8/openwrt-packages/trunk/lua-maxminddb package/lua-maxminddb
-svn co https://github.com/kenzok8/openwrt-packages/trunk/luci-app-passwall2 package/luci-app-passwall2
+# kenzok8 一些翻墙依赖 2023.3.13 使用feeds直接加载passwall库
+# svn co https://github.com/kenzok8/openwrt-packages/trunk/tcping package/tcping
+# svn co https://github.com/kenzok8/openwrt-packages/trunk/naiveproxy package/naiveproxy
+# svn co https://github.com/kenzok8/openwrt-packages/trunk/lua-maxminddb package/lua-maxminddb
+
+# hellowold 依赖
+# tcping和naiveproxy是通用依赖,基本上大部分翻墙都需要,请注意
+# svn co https://github.com/fw876/helloworld/trunk/tcping package/tcping
+# svn co https://github.com/fw876/helloworld/trunk/naiveproxy package/naiveproxy
+# svn co https://github.com/jerrykuku/lua-maxminddb/trunk package/lua-maxminddb
+# svn co https://github.com/jerrykuku/luci-app-vssr/trunk package/luci-app-vssr
+
+# passwall依赖 passwall和passwall2通用,请注意
+# 2023.3.13 取消passwall2，存在分流不按照表进行的情况，使用回passwall
+svn co https://github.com/xiaorouji/openwrt-passwall/trunk/tcping package/tcping
+svn co https://github.com/xiaorouji/openwrt-passwall/trunk/naiveproxy package/naiveproxy
+
+# passwall2
+# svn co https://github.com/xiaorouji/openwrt-passwall2/trunk/luci-app-passwall2 package/luci-app-passwall2
+
+# passwall
+svn co https://github.com/xiaorouji/openwrt-passwall/branches/luci/luci-app-passwall package/luci-app-passwall
 
 # smartDNS
 svn co https://github.com/kenzok8/openwrt-packages/trunk/smartdns package/smartdns
