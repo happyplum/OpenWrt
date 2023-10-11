@@ -76,7 +76,7 @@ on:
         default: true
         type: boolean
   schedule:
-    - cron: 10 0 * * *
+    - cron: 0 0 * * *
 
 env:
   TZ: America/New_York
