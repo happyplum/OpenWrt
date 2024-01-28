@@ -6,6 +6,30 @@
 # Source code repository: https://github.com/coolsnowwolf/lede / Branch: master
 #========================================================================================================================
 
+echo "开始 DIY2 配置……"
+echo "========================="
+
+function merge_package(){
+    repo=`echo $1 | rev | cut -d'/' -f 1 | rev`
+    pkg=`echo $2 | rev | cut -d'/' -f 1 | rev`
+    # find package/ -follow -name $pkg -not -path "package/custom/*" | xargs -rt rm -rf
+    git clone --depth=1 --single-branch $1
+    mv $2 package/custom/
+    rm -rf $repo
+}
+function drop_package(){
+    find package/ -follow -name $1 -not -path "package/custom/*" | xargs -rt rm -rf
+}
+function merge_feed(){
+    if [ ! -d "feed/$1" ]; then
+        echo >> feeds.conf.default
+        echo "src-git $1 $2" >> feeds.conf.default
+    fi
+    ./scripts/feeds update $1
+    ./scripts/feeds install -a -p $1
+}
+rm -rf package/custom; mkdir package/custom
+
 # ------------------------------- Main source started -------------------------------
 #
 # Modify default theme（FROM uci-theme-bootstrap CHANGE TO luci-theme-material）
@@ -32,10 +56,10 @@ sed -i 's/192.168.1.1/192.168.7.1/g' package/base-files/files/bin/config_generat
 # ------------------------------- Other started -------------------------------
 #
 # Add luci-app-amlogic
-svn co https://github.com/ophub/luci-app-amlogic/trunk/luci-app-amlogic package/luci-app-amlogic
-sed -i "s|https.*/OpenWrt|https://github.com/happyplum/OpenWrt|g" package/luci-app-amlogic/root/etc/config/amlogic
-sed -i "s|opt/kernel|https://github.com/ophub/kernel/tree/main/pub/stable|g" package/luci-app-amlogic/root/etc/config/amlogic
-sed -i "s|ARMv8|ARMv8_MINI|g" package/luci-app-amlogic/root/etc/config/amlogic
+merge_package https://github.com/ophub/luci-app-amlogic luci-app-amlogic/luci-app-amlogic
+sed -i "s|https.*/OpenWrt|https://github.com/happyplum/amlogic-s9xxx-openwrt|g" package/custom/luci-app-amlogic/root/etc/config/amlogic
+sed -i "s|opt/kernel|https://github.com/ophub/kernel/tree/main/pub/stable|g" package/custom/luci-app-amlogic/root/etc/config/amlogic
+sed -i "s|ARMv8|ARMv8_MINI|g" package/custom/luci-app-amlogic/root/etc/config/amlogic
 
 # Fix runc version error
 # rm -rf ./feeds/packages/utils/runc/Makefile
@@ -61,38 +85,43 @@ sed -i "s|ARMv8|ARMv8_MINI|g" package/luci-app-amlogic/root/etc/config/amlogic
 sed -i 's/DEPENDS:=@(.*/DEPENDS:=@(TARGET_bcm27xx||TARGET_bcm53xx||TARGET_ipq40xx||TARGET_ipq806x||TARGET_ipq807x||TARGET_mvebu||TARGET_rockchip||TARGET_armvirt) \\/g' package/lean/autocore/Makefile
 
 # openClash
-svn co https://github.com/vernesong/OpenClash/trunk/luci-app-openclash package/luci-app-openclash
+# merge_package https://github.com/vernesong/OpenClash OpenClash/luci-app-openclash
 # 编译 po2lmo (如果有po2lmo可跳过,其实我不知道啥用)
-pushd package/luci-app-openclash/tools/po2lmo
-make && sudo make install
-popd
+# pushd package/custom/luci-app-openclash/tools/po2lmo
+# make && sudo make install
+# popd
 
 # kenzok8 一些翻墙依赖 2023.3.13 使用feeds直接加载passwall库
-# svn co https://github.com/kenzok8/openwrt-packages/trunk/tcping package/tcping
-# svn co https://github.com/kenzok8/openwrt-packages/trunk/naiveproxy package/naiveproxy
-# svn co https://github.com/kenzok8/openwrt-packages/trunk/lua-maxminddb package/lua-maxminddb
+# merge_package https://github.com/kenzok8/openwrt-packages openwrt-packages/tcping
+# merge_package https://github.com/kenzok8/openwrt-packages openwrt-packages/naiveproxy
+# merge_package https://github.com/kenzok8/openwrt-packages openwrt-packages/lua-maxminddb
 
 # hellowold 依赖
 # tcping和naiveproxy是通用依赖,基本上大部分翻墙都需要,请注意
-# svn co https://github.com/fw876/helloworld/trunk/tcping package/tcping
-# svn co https://github.com/fw876/helloworld/trunk/naiveproxy package/naiveproxy
-# svn co https://github.com/jerrykuku/lua-maxminddb/trunk package/lua-maxminddb
-# svn co https://github.com/jerrykuku/luci-app-vssr/trunk package/luci-app-vssr
+# merge_package https://github.com/fw876/helloworld helloworld/tcping
+# merge_package https://github.com/fw876/helloworld helloworld/naiveproxy
+# merge_package https://github.com/fw876/helloworld helloworld/lua-maxminddb
+# merge_package https://github.com/fw876/helloworld helloworld/luci-app-vssr
 
 # passwall依赖 passwall和passwall2通用,请注意
 # 2023.3.13 取消passwall2，存在分流不按照表进行的情况，使用回passwall
-svn co https://github.com/xiaorouji/openwrt-passwall/trunk/tcping package/tcping
-svn co https://github.com/xiaorouji/openwrt-passwall/trunk/naiveproxy package/naiveproxy
+# 2024.1.26 直接使用feeds的xiaorouji/openwrt-passwall-packages下载依赖,不再需要单独依赖下载
 
 # passwall2
-# svn co https://github.com/xiaorouji/openwrt-passwall2/trunk/luci-app-passwall2 package/luci-app-passwall2
+# merge_package https://github.com/xiaorouji/openwrt-passwall2 openwrt-passwall2/luci-app-passwall2
 
 # passwall
-svn co https://github.com/xiaorouji/openwrt-passwall/branches/luci/luci-app-passwall package/luci-app-passwall
+merge_package https://github.com/xiaorouji/openwrt-passwall openwrt-passwall/luci-app-passwall
 
 # smartDNS
-svn co https://github.com/kenzok8/openwrt-packages/trunk/smartdns package/smartdns
-svn co https://github.com/kenzok8/openwrt-packages/trunk/luci-app-smartdns package/luci-app-smartdns
+merge_package https://github.com/kenzok8/openwrt-packages openwrt-packages/smartdns
+merge_package https://github.com/kenzok8/openwrt-packages openwrt-packages/luci-app-smartdns
+
+# feeds use openwrt 23.05 golang
+rm -rf feeds/packages/lang/golang
+git clone --depth=1 --single-branch https://github.com/openwrt/packages openwrt-wrt-packages
+mv openwrt-wrt-packages/lang/golang feeds/packages/lang/
+rm -rf openwrt-wrt-packages
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
