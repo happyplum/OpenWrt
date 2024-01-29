@@ -43,8 +43,7 @@ sed -i "s|DISTRIB_REVISION='.*'|DISTRIB_REVISION='R$(date +%Y.%m.%d)'|g" package
 echo "DISTRIB_SOURCECODE='lede'" >>package/base-files/files/etc/openwrt_release
 
 # Fix xfsprogs build error
-sed -i '/^TARGET_CFLAGS += -DHAVE_MAP_SYNC/c\TARGET_CFLAGS += -DHAVE_MAP_SYNC -D_LARGEFILE64_SOURCE' feeds/packages/utils/xfsprogs/Makefile
-
+sed -i 's|TARGET_CFLAGS += -DHAVE_MAP_SYNC.*|TARGET_CFLAGS += -DHAVE_MAP_SYNC $(if $(CONFIG_USE_MUSL),-D_LARGEFILE64_SOURCE)|' feeds/packages/utils/xfsprogs/Makefile
 
 # Modify default IP（FROM 192.168.1.1 CHANGE TO 192.168.31.4）
 sed -i 's/192.168.1.1/192.168.7.1/g' package/base-files/files/bin/config_generate
