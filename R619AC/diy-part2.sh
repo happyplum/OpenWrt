@@ -118,10 +118,14 @@ merge_package https://github.com/kenzok8/openwrt-packages openwrt-packages/smart
 merge_package https://github.com/kenzok8/openwrt-packages openwrt-packages/luci-app-smartdns
 
 # feeds use openwrt 23.05 golang
+# rm -rf feeds/packages/lang/golang
+# git clone --depth=1 --single-branch https://github.com/openwrt/packages openwrt-wrt-packages
+# mv openwrt-wrt-packages/lang/golang feeds/packages/lang/
+# rm -rf openwrt-wrt-packages
+
+# 2024年2月28日 由于Xray更新1.8.8需要使用1.22golang,openwrt官方源为1.21.5未更新，使用第三方
 rm -rf feeds/packages/lang/golang
-git clone --depth=1 --single-branch https://github.com/openwrt/packages openwrt-wrt-packages
-mv openwrt-wrt-packages/lang/golang feeds/packages/lang/
-rm -rf openwrt-wrt-packages
+git clone --depth=1 https://github.com/sbwml/packages_lang_golang -b 22.x feeds/packages/lang/golang
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
