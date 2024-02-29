@@ -33,7 +33,7 @@ rm -rf package/custom; mkdir package/custom
 # ------------------------------- Main source started -------------------------------
 #
 # Modify default theme（FROM uci-theme-bootstrap CHANGE TO luci-theme-material）
-sed -i 's/luci-theme-bootstrap/luci-theme-material/g' ./feeds/luci/collections/luci/Makefile
+# sed -i 's/luci-theme-bootstrap/luci-theme-material/g' ./feeds/luci/collections/luci/Makefile
 
 # Add autocore support for armvirt
 sed -i 's/TARGET_rockchip/TARGET_rockchip\|\|TARGET_armvirt/g' package/lean/autocore/Makefile
@@ -60,29 +60,11 @@ merge_package https://github.com/ophub/luci-app-amlogic luci-app-amlogic/luci-ap
 sed -i "s|https.*/OpenWrt|https://github.com/happyplum/amlogic-s9xxx-openwrt|g" package/custom/luci-app-amlogic/root/etc/config/amlogic
 sed -i "s|opt/kernel|https://github.com/ophub/kernel/tree/main/pub/stable|g" package/custom/luci-app-amlogic/root/etc/config/amlogic
 sed -i "s|ARMv8|ARMv8_MINI|g" package/custom/luci-app-amlogic/root/etc/config/amlogic
-
-# Fix runc version error
-# rm -rf ./feeds/packages/utils/runc/Makefile
-# svn export https://github.com/openwrt/packages/trunk/utils/runc/Makefile ./feeds/packages/utils/runc/Makefile
-
-# coolsnowwolf default software package replaced with Lienol related software package
-# rm -rf feeds/packages/utils/{containerd,libnetwork,runc,tini}
-# svn co https://github.com/Lienol/openwrt-packages/trunk/utils/{containerd,libnetwork,runc,tini} feeds/packages/utils
-
-# Add third-party software packages (The entire repository)
-# git clone https://github.com/libremesh/lime-packages.git package/lime-packages
-# Add third-party software packages (Specify the package)
-# svn co https://github.com/libremesh/lime-packages/trunk/packages/{shared-state-pirania,pirania-app,pirania} package/lime-packages/packages
-# Add to compile options (Add related dependencies according to the requirements of the third-party software package Makefile)
-# sed -i "/DEFAULT_PACKAGES/ s/$/ pirania-app pirania ip6tables-mod-nat ipset shared-state-pirania uhttpd-mod-lua/" target/linux/armvirt/Makefile
-
+#
 # Apply patch
-# git apply ../config-openwrt/patches/{0001*,0002*}.patch --directory=feeds/luci
+# git apply ../config/patches/{0001*,0002*}.patch --directory=feeds/luci
 #
 # ------------------------------- Other ends -------------------------------
-
-# autocore
-sed -i 's/DEPENDS:=@(.*/DEPENDS:=@(TARGET_bcm27xx||TARGET_bcm53xx||TARGET_ipq40xx||TARGET_ipq806x||TARGET_ipq807x||TARGET_mvebu||TARGET_rockchip||TARGET_armvirt) \\/g' package/lean/autocore/Makefile
 
 # openClash
 # merge_package https://github.com/vernesong/OpenClash OpenClash/luci-app-openclash
@@ -108,7 +90,7 @@ sed -i 's/DEPENDS:=@(.*/DEPENDS:=@(TARGET_bcm27xx||TARGET_bcm53xx||TARGET_ipq40x
 # 2024.1.26 直接使用feeds的xiaorouji/openwrt-passwall-packages下载依赖,不再需要单独依赖下载
 
 # passwall2
-# merge_package https://github.com/xiaorouji/openwrt-passwall2 openwrt-passwall2/luci-app-passwall2
+merge_package https://github.com/xiaorouji/openwrt-passwall2 openwrt-passwall2/luci-app-passwall2
 
 # passwall
 merge_package https://github.com/xiaorouji/openwrt-passwall openwrt-passwall/luci-app-passwall
@@ -118,10 +100,17 @@ merge_package https://github.com/kenzok8/openwrt-packages openwrt-packages/smart
 merge_package https://github.com/kenzok8/openwrt-packages openwrt-packages/luci-app-smartdns
 
 # feeds use openwrt 23.05 golang
+# rm -rf feeds/packages/lang/golang
+# git clone --depth=1 --single-branch https://github.com/openwrt/packages openwrt-wrt-packages
+# mv openwrt-wrt-packages/lang/golang feeds/packages/lang/
+# rm -rf openwrt-wrt-packages
+
+# 2024年2月28日 由于Xray更新1.8.8需要使用1.22golang,openwrt官方源为1.21.5未更新，使用第三方
 rm -rf feeds/packages/lang/golang
-git clone --depth=1 --single-branch https://github.com/openwrt/packages openwrt-wrt-packages
-mv openwrt-wrt-packages/lang/golang feeds/packages/lang/
-rm -rf openwrt-wrt-packages
+git clone --depth=1 https://github.com/sbwml/packages_lang_golang -b 22.x feeds/packages/lang/golang
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
+
+echo "========================="
+echo " DIY2 配置完成……"
