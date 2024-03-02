@@ -110,9 +110,10 @@ rm -rf feeds/packages/lang/golang
 git clone --depth=1 https://github.com/sbwml/packages_lang_golang -b 22.x feeds/packages/lang/golang
 
 # qca-nss-sfe(shortcut-fe)
-rm -rf package/qca/shortcut-fe
-git clone --depth=1 --single-branch https://github.com/happyplum/qca-nss-sfe qca-nss-sfe
-mv qca-nss-sfe package/qca/shortcut-fe
+# 2024年3月2日 lede 无法编译,放弃了
+# rm -rf package/qca/shortcut-fe
+# git clone --depth=1 --single-branch https://github.com/happyplum/qca-nss-sfe qca-nss-sfe
+# mv qca-nss-sfe package/qca/shortcut-fe
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
