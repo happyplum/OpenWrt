@@ -14,7 +14,8 @@
 #
 #  配置文件改好，运行 balethirq.pl 即时生效
 
-# r68s 在6.1下端口顺序有问题，顺序为eth1,eth0,eth2,eth3
+# r68s 在6.1下端口顺序有问题，顺序为eth1,eth0,eth3,eth2;两端一对,中间一对
+# r68s 的端口由于支持多队列,下面 pcie 网口配置应该是不生效的
 
 # lan
 eth0		2
@@ -30,12 +31,12 @@ eth2-16		1
 # pcie lan tx-1
 eth2-18		2
 
-# pcie wan rx
+# pcie lan rx
 eth3-0		3
 eth3-1		4
-# pcie wan tx-0
+# pcie lan tx-0
 eth3-16		3
-# pcie wan tx-1
+# pcie lan tx-1
 eth3-18		4
 
 # usb 3.0
