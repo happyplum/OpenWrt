@@ -58,6 +58,7 @@ wget -P package/base-files/files/usr/sbin https://raw.githubusercontent.com/unif
 wget -P package/base-files/files/usr/sbin https://raw.githubusercontent.com/unifreq/openwrt_packit/master/files/fixcpufreq.pl
 
 # 添加自启动
+chmod 755 -R package/base-files/files/usr/sbin
 sed -i '/exit 0/i\/usr/sbin/balethirq.pl' package/base-files/files/etc/rc.local
 sed -i '/exit 0/i\/usr/sbin/fixcpufreq.pl' package/base-files/files/etc/rc.local
 
