@@ -14,11 +14,13 @@
 #
 #  配置文件改好，运行 balethirq.pl 即时生效
 
-# lan
-eth0		1
+# r68s 在6.1下端口顺序有问题，顺序为eth1,eth0,eth2,eth3
 
 # lan
-eth1		2
+eth0		2
+
+# wan
+eth1		1
 
 # pcie lan rx
 eth2-0		3
