@@ -63,8 +63,8 @@ sed -i '/exit 0/i\/usr/sbin/balethirq.pl' package/base-files/files/etc/rc.local
 sed -i '/exit 0/i\/usr/sbin/fixcpufreq.pl' package/base-files/files/etc/rc.local
 
 # 下载singbox的db数据
-wget -P package/base-files/files/usr/share/sing-box https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.db
-wget -P package/base-files/files/usr/share/sing-box https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.db
+wget -P package/base-files/files/usr/share/singbox https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.db
+wget -P package/base-files/files/usr/share/singbox https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.db
 
 #
 # ------------------------------- Main source ends -------------------------------
