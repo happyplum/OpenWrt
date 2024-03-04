@@ -57,6 +57,10 @@ wget -P package/base-files/files/etc  https://raw.githubusercontent.com/happyplu
 wget -P package/base-files/files/usr/sbin https://raw.githubusercontent.com/unifreq/openwrt_packit/master/files/balethirq.pl
 wget -P package/base-files/files/usr/sbin https://raw.githubusercontent.com/unifreq/openwrt_packit/master/files/fixcpufreq.pl
 
+# 添加自启动
+sed -i '/exit 0/i\/usr/sbin/balethirq.pl' package/base-files/files/etc/rc.local
+sed -i '/exit 0/i\/usr/sbin/fixcpufreq.pl' package/base-files/files/etc/rc.local
+
 # 下载singbox的db数据
 wget -P package/base-files/files/usr/share/sing-box https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.db
 wget -P package/base-files/files/usr/share/sing-box https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.db
