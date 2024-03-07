@@ -72,10 +72,10 @@ wget -P package/base-files/files/usr/share/singbox https://github.com/MetaCubeX/
 # ------------------------------- Other started -------------------------------
 #
 # Add luci-app-amlogic
-merge_package https://github.com/ophub/luci-app-amlogic luci-app-amlogic/luci-app-amlogic
-sed -i "s|https.*/OpenWrt|https://github.com/happyplum/amlogic-s9xxx-openwrt|g" package/custom/luci-app-amlogic/root/etc/config/amlogic
-sed -i "s|opt/kernel|https://github.com/ophub/kernel/tree/main/pub/stable|g" package/custom/luci-app-amlogic/root/etc/config/amlogic
-sed -i "s|ARMv8|ARMv8_MINI|g" package/custom/luci-app-amlogic/root/etc/config/amlogic
+# merge_package https://github.com/ophub/luci-app-amlogic luci-app-amlogic/luci-app-amlogic
+# sed -i "s|https.*/OpenWrt|https://github.com/happyplum/amlogic-s9xxx-openwrt|g" package/custom/luci-app-amlogic/root/etc/config/amlogic
+# sed -i "s|opt/kernel|https://github.com/ophub/kernel/tree/main/pub/stable|g" package/custom/luci-app-amlogic/root/etc/config/amlogic
+# sed -i "s|ARMv8|ARMv8_MINI|g" package/custom/luci-app-amlogic/root/etc/config/amlogic
 
 # Fix runc version error
 # rm -rf ./feeds/packages/utils/runc/Makefile
