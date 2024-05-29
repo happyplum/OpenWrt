@@ -35,7 +35,7 @@ rm -rf package/custom; mkdir package/custom
 # Modify default theme（FROM uci-theme-bootstrap CHANGE TO luci-theme-material）
 sed -i 's/luci-theme-bootstrap/luci-theme-material/g' ./feeds/luci/collections/luci/Makefile
 
-# autocore
+# Add autocore support for armvirt
 sed -i 's/DEPENDS:=@(.*/DEPENDS:=@(TARGET_bcm27xx||TARGET_bcm53xx||TARGET_ipq40xx||TARGET_ipq806x||TARGET_ipq807x||TARGET_mvebu||TARGET_rockchip||TARGET_armvirt) \\/g' package/lean/autocore/Makefile
 
 # Set etc/openwrt_release
@@ -50,6 +50,10 @@ sed -i 's/192.168.1.1/192.168.7.1/g' package/base-files/files/bin/config_generat
 
 # Replace the default software source
 # sed -i 's#openwrt.proxy.ustclug.org#mirrors.bfsu.edu.cn\\/openwrt#' package/lean/default-settings/files/zzz-default-settings
+
+# readd cpufreq for aarch64
+sed -i 's/LUCI_DEPENDS.*/LUCI_DEPENDS:=\@\(arm\|\|aarch64\)/g' feeds/luci/applications/luci-app-cpufreq/Makefile
+sed -i 's/services/system/g'  feeds/luci/applications/luci-app-cpufreq/luasrc/controller/cpufreq.lua
 
 # 优化
 wget -P package/base-files/files/etc/sysctl.d https://raw.githubusercontent.com/happyplum/OpenWrt/main/R68S/config/99-custom.conf
