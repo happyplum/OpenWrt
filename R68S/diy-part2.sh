@@ -43,7 +43,8 @@ sed -i "s|DISTRIB_REVISION='.*'|DISTRIB_REVISION='R$(date +%Y.%m.%d)'|g" package
 echo "DISTRIB_SOURCECODE='lede'" >>package/base-files/files/etc/openwrt_release
 
 # Fix xfsprogs build error
-sed -i 's|TARGET_CFLAGS += -DHAVE_MAP_SYNC.*|TARGET_CFLAGS += -DHAVE_MAP_SYNC $(if $(CONFIG_USE_MUSL),-D_LARGEFILE64_SOURCE)|' feeds/packages/utils/xfsprogs/Makefile
+# 2024年6月6日 尝试关闭该修复，看看官方修复了没
+# sed -i 's|TARGET_CFLAGS += -DHAVE_MAP_SYNC.*|TARGET_CFLAGS += -DHAVE_MAP_SYNC $(if $(CONFIG_USE_MUSL),-D_LARGEFILE64_SOURCE)|' feeds/packages/utils/xfsprogs/Makefile
 
 # Modify default IP（FROM 192.168.1.1 CHANGE TO 192.168.31.4）
 sed -i 's/192.168.1.1/192.168.7.1/g' package/base-files/files/bin/config_generate
@@ -56,9 +57,13 @@ sed -i 's/LUCI_DEPENDS.*/LUCI_DEPENDS:=\@\(arm\|\|aarch64\)/g' feeds/luci/applic
 sed -i 's/services/system/g'  feeds/luci/applications/luci-app-cpufreq/luasrc/controller/cpufreq.lua
 
 # 优化
+rm -rf package/base-files/files/etc/sysctl.d
 wget -P package/base-files/files/etc/sysctl.d https://raw.githubusercontent.com/happyplum/OpenWrt/main/R68S/config/99-custom.conf
+rm -rf package/base-files/files/etc/balance_irq
 wget -P package/base-files/files/etc  https://raw.githubusercontent.com/happyplum/OpenWrt/main/R68S/config/balance_irq
+rm -rf package/base-files/files/usr/sbin/balethirq.pl
 wget -P package/base-files/files/usr/sbin https://raw.githubusercontent.com/unifreq/openwrt_packit/master/files/balethirq.pl
+rm -rf package/base-files/files/usr/sbin/fixcpufreq.pl
 wget -P package/base-files/files/usr/sbin https://raw.githubusercontent.com/unifreq/openwrt_packit/master/files/fixcpufreq.pl
 
 # 添加自启动
@@ -67,7 +72,9 @@ sed -i '/exit 0/i\/usr/sbin/balethirq.pl' package/base-files/files/etc/rc.local
 sed -i '/exit 0/i\/usr/sbin/fixcpufreq.pl' package/base-files/files/etc/rc.local
 
 # 下载singbox的db数据
+rm -rf package/base-files/files/usr/share/singbox/geoip.db
 wget -P package/base-files/files/usr/share/singbox https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.db
+rm -rf package/base-files/files/usr/share/singbox/geosite.db
 wget -P package/base-files/files/usr/share/singbox https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.db
 
 #
@@ -108,6 +115,7 @@ wget -P package/base-files/files/usr/share/singbox https://github.com/MetaCubeX/
 # passwall依赖 passwall和passwall2通用,请注意
 # 2023.3.13 取消passwall2，存在分流不按照表进行的情况，使用回passwall
 # 2024.1.26 直接使用feeds的xiaorouji/openwrt-passwall-packages下载依赖,不再需要单独依赖下载
+# 2024年6月6日 passwall也有不按照分流的情况，再试试passwall2
 
 # passwall2
 merge_package https://github.com/xiaorouji/openwrt-passwall2 openwrt-passwall2/luci-app-passwall2
@@ -126,8 +134,9 @@ merge_package https://github.com/kenzok8/openwrt-packages openwrt-packages/luci-
 # rm -rf openwrt-wrt-packages
 
 # 2024年2月28日 由于Xray更新1.8.8需要使用1.22golang,openwrt官方源为1.21.5未更新，使用第三方
-rm -rf feeds/packages/lang/golang
-git clone --depth=1 https://github.com/sbwml/packages_lang_golang -b 22.x feeds/packages/lang/golang
+# 2024年6月6日 时间差不多了，取消go的替换
+# rm -rf feeds/packages/lang/golang
+# git clone --depth=1 https://github.com/sbwml/packages_lang_golang -b 22.x feeds/packages/lang/golang
 
 # qca-nss-sfe(shortcut-fe)
 # 2024年3月2日 lede 无法编译,放弃了
