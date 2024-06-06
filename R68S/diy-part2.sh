@@ -110,7 +110,7 @@ wget -P package/base-files/files/usr/share/singbox https://github.com/MetaCubeX/
 # 2024.1.26 直接使用feeds的xiaorouji/openwrt-passwall-packages下载依赖,不再需要单独依赖下载
 
 # passwall2
-# merge_package https://github.com/xiaorouji/openwrt-passwall2 openwrt-passwall2/luci-app-passwall2
+merge_package https://github.com/xiaorouji/openwrt-passwall2 openwrt-passwall2/luci-app-passwall2
 
 # passwall
 merge_package https://github.com/xiaorouji/openwrt-passwall openwrt-passwall/luci-app-passwall
