@@ -124,8 +124,8 @@ merge_package https://github.com/xiaorouji/openwrt-passwall2 openwrt-passwall2/l
 merge_package https://github.com/xiaorouji/openwrt-passwall openwrt-passwall/luci-app-passwall
 
 # smartDNS
-merge_package https://github.com/kenzok8/openwrt-packages openwrt-packages/smartdns
-merge_package https://github.com/kenzok8/openwrt-packages openwrt-packages/luci-app-smartdns
+merge_package https://github.com/pymumu/openwrt-smartdns openwrt-smartdns
+merge_package https://github.com/pymumu/luci-app-smartdns luci-app-smartdns
 
 # feeds use openwrt 23.05 golang
 # rm -rf feeds/packages/lang/golang
