@@ -59,6 +59,8 @@ sed -i 's/services/system/g'  feeds/luci/applications/luci-app-cpufreq/luasrc/co
 # 优化
 rm -rf package/base-files/files/etc/sysctl.d/base.conf
 wget -P package/base-files/files/etc/sysctl.d https://raw.githubusercontent.com/happyplum/OpenWrt/main/R68S/config/base.conf
+rm -rf package/base-files/files/etc/sysctl.d/pro.conf
+wget -P package/base-files/files/etc/sysctl.d https://raw.githubusercontent.com/happyplum/OpenWrt/main/R68S/config/pro.conf
 rm -rf package/base-files/files/etc/sysctl.d/99-custom.conf
 wget -P package/base-files/files/etc/sysctl.d https://raw.githubusercontent.com/happyplum/OpenWrt/main/R68S/config/99-custom.conf
 rm -rf package/base-files/files/etc/balance_irq
