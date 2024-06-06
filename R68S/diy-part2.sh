@@ -57,7 +57,9 @@ sed -i 's/LUCI_DEPENDS.*/LUCI_DEPENDS:=\@\(arm\|\|aarch64\)/g' feeds/luci/applic
 sed -i 's/services/system/g'  feeds/luci/applications/luci-app-cpufreq/luasrc/controller/cpufreq.lua
 
 # 优化
-rm -rf package/base-files/files/etc/sysctl.d
+rm -rf package/base-files/files/etc/sysctl.d/base.conf
+wget -P package/base-files/files/etc/sysctl.d https://raw.githubusercontent.com/happyplum/OpenWrt/main/R68S/config/base.conf
+rm -rf package/base-files/files/etc/sysctl.d/99-custom.conf
 wget -P package/base-files/files/etc/sysctl.d https://raw.githubusercontent.com/happyplum/OpenWrt/main/R68S/config/99-custom.conf
 rm -rf package/base-files/files/etc/balance_irq
 wget -P package/base-files/files/etc  https://raw.githubusercontent.com/happyplum/OpenWrt/main/R68S/config/balance_irq
