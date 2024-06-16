@@ -120,9 +120,10 @@ wget -P package/base-files/files/usr/share/singbox https://github.com/MetaCubeX/
 # 2023.3.13 取消passwall2，存在分流不按照表进行的情况，使用回passwall
 # 2024.1.26 直接使用feeds的xiaorouji/openwrt-passwall-packages下载依赖,不再需要单独依赖下载
 # 2024年6月6日 passwall也有不按照分流的情况，再试试passwall2
+# 2024年6月14日 passwall2每次需要清空ipset，也不稳定，目测和设置规则较多也有关系。并且passwall2会影响到防火墙的端口转发，实测开启后端口转发失效。
 
 # passwall2
-merge_package https://github.com/xiaorouji/openwrt-passwall2 openwrt-passwall2/luci-app-passwall2
+# merge_package https://github.com/xiaorouji/openwrt-passwall2 openwrt-passwall2/luci-app-passwall2
 
 # passwall
 merge_package https://github.com/xiaorouji/openwrt-passwall openwrt-passwall/luci-app-passwall
