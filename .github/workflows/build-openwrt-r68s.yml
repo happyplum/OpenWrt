@@ -24,11 +24,9 @@ env:
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: R68S/diy-part2.sh
   UPLOAD_BIN_DIR: false
-  UPLOAD_FIRMWARE: false
+  UPLOAD_FIRMWARE: true
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
-  FILE_NAME: ARMv8_R68S_ROOTFS
-  PRODUCT_NAME: ARMv8_R68S_ROOTFS
 
 jobs:
   build:
@@ -58,6 +56,8 @@ jobs:
           sudo sed -i '/NVM_DIR/d;/skel/d' /root/{.bashrc,.profile}
           sudo rm -rf ~/{.cargo,.dotnet,.rustup}
           sudo timedatectl set-timezone "${TZ}"
+          sudo mkdir -p /workdir
+          sudo chown $USER:$GROUPS /workdir
           echo "status=success" >> ${GITHUB_OUTPUT}
 
       - name: Create simulated physical disk
@@ -141,20 +141,17 @@ jobs:
 
       - name: Upload bin directory
         uses: actions/upload-artifact@main
-        if: ${{ steps.compile.outputs.status }} == 'success' && env.UPLOAD_BIN_DIR == 'true'
+        if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
         with:
           name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
           path: openwrt/bin
 
       - name: Organize files
         id: organize
-        if: ${{ steps.compile.outputs.status }} == 'success' && !cancelled()
+        if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
         run: |
-          cd $GITHUB_WORKSPACE/openwrt/bin/packages
-          tar -zcvf Packages.tar.gz ./*
-          cp Packages.tar.gz $GITHUB_WORKSPACE/openwrt/bin/targets/*/*
-          cd $GITHUB_WORKSPACE/openwrt/bin/targets/*/*
-          rm -rf packages feeds.buildinfo sha256sums version.buildinfo
+          cd openwrt/bin/targets/*/*
+          rm -rf packages
           echo "FIRMWARE=$PWD" >> $GITHUB_ENV
           echo "status=success" >> ${GITHUB_OUTPUT}
 
@@ -165,38 +162,36 @@ jobs:
           name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
           path: ${{ env.FIRMWARE }}
 
-      - name: Create release
-        id: release
-        uses: ncipollo/release-action@main
-        if: steps.organize.outputs.status == 'success' && env.UPLOAD_RELEASE == 'true'
+      - name: Generate release tag
+        id: tag
+        if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+        run: |
+          echo "release_tag=$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
+          touch release.txt
+          [ ${UPLOAD_GOFILE} = true && ${{ steps.gofile.outputs.url }} ] && echo "🔗 [GoFile](${{ steps.gofile.outputs.url }})" >> release.txt
+          echo "status=success" >> $GITHUB_OUTPUT
+
+      - name: Upload firmware to release
+        uses: softprops/action-gh-release@master
+        if: steps.tag.outputs.status == 'success' && !cancelled()
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASES_TOKEN }}
         with:
-          name: R${{ env.DATE }} for ${{ env.PRODUCT_NAME }}
-          allowUpdates: true
-          tag: ${{ env.FILE_NAME }}
-          commit: main
-          token: ${{ secrets.RELEASES_TOKEN }}
-          body: |
-            - 此为精简自用底包，非完整固件，每日自动编译
-            - 默认IP：192.168.7.1 默认密码：password
-            - 当前使用版本:【编译前的最后一次[➦主源码](https://github.com/coolsnowwolf/lede)更新记录】
-            ${{ env.useVersionInfo }}
-          artifacts: ${{ env.FIRMWARE }}/*
+          tag_name: ${{ steps.tag.outputs.release_tag }}
+          body_path: release.txt
+          files: ${{ env.FIRMWARE }}/*
 
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@main
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ github.repository }}
-          retain_days: 60
-          keep_minimum_runs: 60
+          retain_days: 0
+          keep_minimum_runs: 2
 
       - name: Remove old Releases
-        uses: dev-drprasad/delete-older-releases@v0.2.0
+        uses: dev-drprasad/delete-older-releases@master
         if: env.UPLOAD_RELEASE == 'true' && !cancelled()
         with:
-          repo:
-          keep_latest: 30
-          delete_tag_pattern:
+          keep_latest: 3
           delete_tags: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASES_TOKEN }}
