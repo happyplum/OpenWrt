@@ -56,6 +56,9 @@ sed -i 's/192.168.1.1/192.168.7.1/g' package/base-files/files/bin/config_generat
 sed -i 's/LUCI_DEPENDS.*/LUCI_DEPENDS:=\@\(arm\|\|aarch64\)/g' feeds/luci/applications/luci-app-cpufreq/Makefile
 sed -i 's/services/system/g'  feeds/luci/applications/luci-app-cpufreq/luasrc/controller/cpufreq.lua
 
+# 2024年8月30日屏蔽3528和3588的编译，被强制选中了，而且需要python2
+sed -i '/^UBOOT_TARGETS := rk3528-evb rk3588-evb/s/^/#/' package/boot/uboot-rk35xx/Makefile
+
 # 优化
 rm -rf package/base-files/files/etc/sysctl.d/base.conf
 wget -P package/base-files/files/etc/sysctl.d https://raw.githubusercontent.com/happyplum/OpenWrt/main/R68S/config/base.conf
