@@ -131,8 +131,10 @@ wget -P package/base-files/files/usr/share/singbox https://github.com/MetaCubeX/
 # passwall
 merge_package https://github.com/xiaorouji/openwrt-passwall openwrt-passwall/luci-app-passwall
 
-# smartDNS
+# smartDNS #2025年4月6日 根据仓库代码，openwrt-smartdns/需要拷贝到/feeds/packages/net/smartdns/
 merge_package https://github.com/pymumu/openwrt-smartdns openwrt-smartdns
+rm -rf feeds/packages/net/smartdns
+mv package/custom/openwrt-smartdns feeds/packages/net/smartdns
 merge_package https://github.com/pymumu/luci-app-smartdns luci-app-smartdns
 
 # feeds use openwrt 23.05 golang
@@ -151,6 +153,19 @@ merge_package https://github.com/pymumu/luci-app-smartdns luci-app-smartdns
 # rm -rf package/qca/shortcut-fe
 # git clone --depth=1 --single-branch https://github.com/happyplum/qca-nss-sfe qca-nss-sfe
 # mv qca-nss-sfe package/qca/shortcut-fe
+
+# feeds中一些包不采用packages中的，而是采用passwall_net中
+git clone --depth=1 --single-branch https://github.com/xiaorouji/openwrt-passwall-packages.git passwall-net
+rm -rf feeds/packages/net/chinadns-ng
+rm -rf feeds/packages/net/dns2socks
+rm -rf feeds/packages/net/geoview
+rm -rf feeds/packages/net/microsocks
+rm -rf feeds/packages/net/shadowsocks-libev
+rm -rf feeds/packages/net/sing-box
+rm -rf feeds/packages/net/tcping
+rm -rf feeds/packages/net/v2ray-geodata
+rm -rf feeds/packages/net/xray-core
+mv passwall-net/* feeds/packages/net/ -f
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
