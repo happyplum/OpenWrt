@@ -126,6 +126,8 @@ merge_package https://github.com/xiaorouji/openwrt-passwall openwrt-passwall/luc
 
 # smartDNS
 merge_package https://github.com/kenzok8/openwrt-packages openwrt-packages/smartdns
+rm -rf feeds/packages/net/smartdns
+mv package/custom/openwrt-smartdns feeds/packages/net/smartdns
 merge_package https://github.com/kenzok8/openwrt-packages openwrt-packages/luci-app-smartdns
 
 # feeds use openwrt 23.05 golang
@@ -137,6 +139,19 @@ merge_package https://github.com/kenzok8/openwrt-packages openwrt-packages/luci-
 # 2024年2月28日 由于Xray更新1.8.8需要使用1.22golang,openwrt官方源为1.21.5未更新，使用第三方
 # rm -rf feeds/packages/lang/golanggo
 # git clone --depth=1 https://github.com/sbwml/packages_lang_golang -b 22.x feeds/packages/lang/golang
+
+# feeds中一些包不采用packages中的，而是采用passwall_net中
+git clone --depth=1 --single-branch https://github.com/xiaorouji/openwrt-passwall-packages.git passwall-net
+rm -rf feeds/packages/net/chinadns-ng
+rm -rf feeds/packages/net/dns2socks
+rm -rf feeds/packages/net/geoview
+rm -rf feeds/packages/net/microsocks
+rm -rf feeds/packages/net/shadowsocks-libev
+rm -rf feeds/packages/net/sing-box
+rm -rf feeds/packages/net/tcping
+rm -rf feeds/packages/net/v2ray-geodata
+rm -rf feeds/packages/net/xray-core
+mv passwall-net/* feeds/packages/net/ -f
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
