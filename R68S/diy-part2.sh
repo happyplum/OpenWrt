@@ -73,6 +73,7 @@ rm -rf package/base-files/files/usr/sbin/balethirq.pl
 wget -P package/base-files/files/usr/sbin https://raw.githubusercontent.com/unifreq/openwrt_packit/master/files/balethirq.pl
 rm -rf package/base-files/files/usr/sbin/fixcpufreq.pl
 wget -P package/base-files/files/usr/sbin https://raw.githubusercontent.com/unifreq/openwrt_packit/master/files/fixcpufreq.pl
+sed -i 's/schedutil/performance/g'  package/base-files/files/usr/sbin/fixcpufreq.pl
 
 # 添加自启动
 chmod 755 -R package/base-files/files/usr/sbin
