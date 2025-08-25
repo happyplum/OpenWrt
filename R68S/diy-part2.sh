@@ -85,6 +85,12 @@ wget -P package/base-files/files/usr/share/singbox https://github.com/MetaCubeX/
 rm -rf package/base-files/files/usr/share/singbox/geosite.db
 wget -P package/base-files/files/usr/share/singbox https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.db
 
+# 下载v2ray的dat数据
+rm -rf package/base-files/files/usr/share/v2ray/geoip.dat
+wget -P package/base-files/files/usr/share/v2ray https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat
+rm -rf package/base-files/files/usr/share/v2ray/geosite.dat
+wget -P package/base-files/files/usr/share/v2ray https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat
+
 #
 # ------------------------------- Main source ends -------------------------------
 
