@@ -180,7 +180,19 @@ jobs:
           # Clean up server space
           cd openwrt/
           [[ -d "output" ]] || mkdir output
-          cp -f bin/targets/*/*/*rootfs.tar.gz output/
+
+          # List all rootfs.tar.gz files to debug path issue
+          echo "=== Looking for rootfs.tar.gz files in bin directory ==="
+          find bin -name "*rootfs.tar.gz" -type f
+          echo "=== Found rootfs.tar.gz files ==="
+
+          # Try to copy files with more flexible path matching
+          cp -f bin/targets/*/*/*rootfs.tar.gz output/ 2>/dev/null || cp -f bin/*/*/*rootfs.tar.gz output/ 2>/dev/null || cp -f bin/*rootfs.tar.gz output/ 2>/dev/null
+
+          # Check what was copied
+          echo "=== Files in output directory ==="
+          ls -la output/
+
           cp -f .config output/config
           rm -rf $(ls . | grep -v "^output$" | xargs) 2>/dev/null
 
